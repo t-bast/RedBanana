@@ -1,5 +1,9 @@
 module Main where
 
+import RedBanana.EthereumClient
+import RedBanana.Types
+
+import Data.Text
 import Options.Applicative
 import Data.Semigroup ((<>))
 
@@ -27,5 +31,7 @@ main =
             <> header "Red Banana" )
     
 analyze :: Args -> IO ()
-analyze (Args h False) = putStrLn $ "Analyzing, " ++ h
+analyze (Args addr False) = do
+    tx <- getTransactions $ pack addr
+    print tx
 analyze _ = return ()
