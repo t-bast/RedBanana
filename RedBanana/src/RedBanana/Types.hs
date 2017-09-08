@@ -8,11 +8,11 @@ import GHC.Generics (Generic)
 
 data Transaction = Transaction 
     { blockHash :: Text
-    , blockNumber :: Int
-    , confirmations :: Int
+    , blockNumber :: Text
+    , confirmations :: Text
     , from :: Text
     , to :: Text
-    , value :: Int } 
+    , value :: Text } 
     deriving (Generic, Show)
 
 instance FromJSON Transaction

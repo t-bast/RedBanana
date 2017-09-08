@@ -3,7 +3,7 @@ module Main where
 import RedBanana.EthereumClient
 import RedBanana.Types
 
-import Data.Text
+import qualified Data.Text as T
 import Options.Applicative
 import Data.Semigroup ((<>))
 
@@ -32,6 +32,8 @@ main =
     
 analyze :: Args -> IO ()
 analyze (Args addr False) = do
-    tx <- getTransactions $ pack addr
-    print tx
+    tx <- getTransactions $ T.pack addr
+    print $ case tx of
+        Nothing -> "Invalid address"
+        Just tx -> show $ head tx
 analyze _ = return ()
