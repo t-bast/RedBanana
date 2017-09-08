@@ -16,13 +16,14 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     RedBanana.Types
-                     , RedBanana.EthereumClient
+                     , RedBanana.Etherscan
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , bytestring
                      , lens
                      , lens-aeson
                      , text
+                     , vector
                      , wreq
   default-extensions:  OverloadedStrings
   default-language:    Haskell2010

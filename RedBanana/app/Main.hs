@@ -1,6 +1,6 @@
 module Main where
 
-import RedBanana.EthereumClient
+import RedBanana.Etherscan
 import RedBanana.Types
 
 import qualified Data.Text as T
