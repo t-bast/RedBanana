@@ -26,5 +26,5 @@ getTransactions :: Text -> IO (Maybe [Transaction])
 getTransactions address = do
     let query = defaults & param "address" .~ [address]
     r <- getWith query "http://api.etherscan.io/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=asc"
-    let tx = r ^. responseBody . key "result" . _Array
-    return $ mapM (parseMaybe toTransaction) $ toList tx
+    let tx = r ^? responseBody . key "result" . _Array
+    return $ tx >>= mapM (parseMaybe toTransaction) . toList
