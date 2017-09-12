@@ -1,7 +1,6 @@
 module Main where
 
 import RedBanana.Etherscan
-import RedBanana.Types
 
 import qualified Data.Text as T
 import Options.Applicative
@@ -20,7 +19,7 @@ args = Args
             ( long "verbose"
             <> short 'v'
             <> help "Output verbosity" )
-        
+
 main :: IO ()
 main =
     analyze =<< execParser opts
@@ -29,11 +28,11 @@ main =
             ( fullDesc
             <> progDesc "Analyze transaction to an ethereum address"
             <> header "Red Banana" )
-    
+
 analyze :: Args -> IO ()
 analyze (Args addr False) = do
-    tx <- getTransactions $ T.pack addr
+    tx <- getTransactions (T.pack addr) 0 99999999 "asc"
     print $ case tx of
-        Nothing -> "Invalid address"
+        Nothing -> "API error"
         Just tx -> show $ head tx
 analyze _ = return ()
