@@ -25,6 +25,7 @@ library
                      , text
                      , vector
                      , wreq
+                     , formatting
   default-extensions:  OverloadedStrings
   default-language:    Haskell2010
 

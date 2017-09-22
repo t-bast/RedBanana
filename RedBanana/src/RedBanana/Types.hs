@@ -7,7 +7,8 @@ import Data.Text
 import GHC.Generics (Generic)
 
 data Transaction = Transaction 
-    { blockHash :: Text
+    { hash :: Text
+    , blockHash :: Text
     , blockNumber :: Integer
     , confirmations :: Integer
     , from :: Text
