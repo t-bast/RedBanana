@@ -1,4 +1,4 @@
-module RedBanana.Etherscan (getTransactions, generateGraph) where
+module RedBanana.Etherscan (getTransactions) where
 
 import Control.Lens ((.~), (&), (^?))
 import Data.Aeson (Value(..), (.:))
@@ -9,8 +9,6 @@ import Network.Wreq
 import Data.Vector (toList)
 import RedBanana.Types
 import qualified Data.Text as T
-import Formatting
-import Formatting.Formatters
 
 toInt :: String -> Integer
 toInt = read
@@ -37,14 +35,3 @@ getTransactions address startBlock endBlock sort = do
     r <- getWith query "http://api.etherscan.io/api"
     let tx = r ^? responseBody . key "result" . _Array
     return $ tx >>= mapM (parseMaybe toTransaction) . toList
-
-
-generateGraph :: [Transaction] -> Text
-generateGraph txs =
-    let edges = map (\tx -> sformat ("\"" % stext % "\" -> \"" % stext % "\" [label=\"" % int % "\"];") (from tx) (to tx) (value tx)) txs :: [Text]
-    in sformat ("digraph G { " % stext % " }") (foldr T.append T.empty edges)
-
-getTransactionsFlow :: Text -> Int -> IO [Transaction]
-getTransactionsFlow addr 0 = pure $ Just []
-getTransactionsFlow addr n = do
-    inTxs <- getTransactions addr 0 9999999 "asc" >>= return . filter ((== addr) . to) . maybe [] id 

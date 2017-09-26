@@ -1,6 +1,7 @@
 module Main where
 
 import RedBanana.Etherscan
+import RedBanana.GraphGenerator
 
 import qualified Data.Text as T
 import Options.Applicative
@@ -32,7 +33,7 @@ main =
 analyze :: Args -> IO ()
 analyze (Args addr False) = do
     tx <- getTransactions (T.pack addr) 0 99999999 "asc"
-    print $ case tx of
+    putStr $ case tx of
         Nothing -> "API error"
-        Just tx -> show $ head tx
+        Just tx -> T.unpack $ generate tx
 analyze _ = return ()

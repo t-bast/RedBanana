@@ -17,6 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     RedBanana.Types
                      , RedBanana.Etherscan
+                     , RedBanana.GraphGenerator
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , bytestring
