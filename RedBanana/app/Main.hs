@@ -32,8 +32,10 @@ main =
 
 analyze :: Args -> IO ()
 analyze (Args addr False) = do
-    tx <- getTransactions (T.pack addr) 0 99999999 "asc"
-    putStr $ case tx of
-        Nothing -> "API error"
-        Just tx -> T.unpack $ generate tx
+    let depth = 2
+    putStrLn $ "Searching for transactions sent to " ++ addr
+    putStrLn $ "Maximum graph depth: " ++ show depth
+    tx <- getTransactionsFlow (T.pack addr) 0 99999999 "asc" depth
+    putStrLn $ (show . length $ tx) ++ " transactions found"
+    putStr $ T.unpack . generate $ tx
 analyze _ = return ()

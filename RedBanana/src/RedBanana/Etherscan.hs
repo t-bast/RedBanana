@@ -1,14 +1,15 @@
-module RedBanana.Etherscan (getTransactions) where
+module RedBanana.Etherscan (getTransactions, getTransactionsFlow) where
 
 import Control.Lens ((.~), (&), (^?))
 import Data.Aeson (Value(..), (.:))
 import Data.Aeson.Lens (key, _Array)
 import Data.Aeson.Types (Parser, parseMaybe)
+import Data.Maybe
 import Data.Text (Text)
-import Network.Wreq
-import Data.Vector (toList)
-import RedBanana.Types
 import qualified Data.Text as T
+import Data.Vector (toList)
+import Network.Wreq
+import RedBanana.Types
 
 toInt :: String -> Integer
 toInt = read
@@ -35,3 +36,12 @@ getTransactions address startBlock endBlock sort = do
     r <- getWith query "http://api.etherscan.io/api"
     let tx = r ^? responseBody . key "result" . _Array
     return $ tx >>= mapM (parseMaybe toTransaction) . toList
+
+getTransactionsFlow :: Text -> Int -> Int -> Text -> Int -> IO [Transaction]
+getTransactionsFlow _ _ _ _ 0 = return []
+getTransactionsFlow addr startBlock endBlock sort depth = do
+    allTxs <- getTransactions addr startBlock endBlock sort 
+    let incomingTxs = filter ((== addr) . to) . fromMaybe [] $ allTxs
+    let sendersToAnalyze = filter (\tx -> from tx /= "GENESIS") incomingTxs
+    recursiveTxs <- mapM (\tx -> getTransactionsFlow (from tx) startBlock endBlock sort (depth - 1)) sendersToAnalyze
+    return $ concat $ incomingTxs : recursiveTxs
