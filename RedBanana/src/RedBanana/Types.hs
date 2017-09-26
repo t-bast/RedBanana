@@ -17,3 +17,10 @@ data Transaction = Transaction
     deriving (Generic, Show)
 
 instance FromJSON Transaction
+
+data TransactionArgs = TransactionArgs
+    { address :: Text
+    , startBlock :: Int
+    , endBlock :: Int
+    , sort :: Text }
+    deriving (Show)

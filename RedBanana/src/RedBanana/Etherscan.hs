@@ -25,8 +25,8 @@ toTransaction (Object v) =
     <*> v .: "to"
     <*> (toInt <$> v .: "value")
 
-getTransactions :: Text -> Int -> Int -> Text -> IO (Maybe [Transaction])
-getTransactions address startBlock endBlock sort = do
+getTransactions :: TransactionArgs -> IO (Maybe [Transaction])
+getTransactions (TransactionArgs address startBlock endBlock sort) = do
     let query = defaults & param "module" .~ ["account"]
                          & param "action" .~ ["txlist"]
                          & param "address" .~ [address]
@@ -37,11 +37,11 @@ getTransactions address startBlock endBlock sort = do
     let tx = r ^? responseBody . key "result" . _Array
     return $ tx >>= mapM (parseMaybe toTransaction) . toList
 
-getTransactionsFlow :: Text -> Int -> Int -> Text -> Int -> IO [Transaction]
-getTransactionsFlow _ _ _ _ 0 = return []
-getTransactionsFlow addr startBlock endBlock sort depth = do
-    allTxs <- getTransactions addr startBlock endBlock sort 
-    let incomingTxs = filter ((== addr) . to) . fromMaybe [] $ allTxs
+getTransactionsFlow :: TransactionArgs -> Int -> IO [Transaction]
+getTransactionsFlow _ 0 = return []
+getTransactionsFlow args depth = do
+    incomingTxs <- fmap (filter ((== address args) . to) . fromMaybe []) (getTransactions args)
     let sendersToAnalyze = filter (\tx -> from tx /= "GENESIS") incomingTxs
-    recursiveTxs <- mapM (\tx -> getTransactionsFlow (from tx) startBlock endBlock sort (depth - 1)) sendersToAnalyze
+    let transactionArgs tx = TransactionArgs (from tx) (startBlock args) (endBlock args) (sort args)
+    recursiveTxs <- mapM (\tx -> getTransactionsFlow (transactionArgs tx) (depth - 1)) sendersToAnalyze
     return $ concat $ incomingTxs : recursiveTxs

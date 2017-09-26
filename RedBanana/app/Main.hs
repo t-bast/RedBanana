@@ -2,6 +2,7 @@ module Main where
 
 import RedBanana.Etherscan
 import RedBanana.GraphGenerator
+import RedBanana.Types (TransactionArgs(..))
 
 import Control.Monad
 import Data.Semigroup ((<>))
@@ -67,7 +68,7 @@ analyze :: Args -> IO ()
 analyze (Args addr "ethereum" depth startBlock endBlock verbose) = do
     when verbose $ putStrLn $ "Searching for transactions sent to " ++ addr
     when verbose $ putStrLn $ "Maximum graph depth: " ++ show depth
-    tx <- getTransactionsFlow (T.pack addr) startBlock endBlock "asc" depth
+    tx <- getTransactionsFlow (TransactionArgs (T.pack addr) startBlock endBlock "asc") depth
     when verbose $ putStrLn $ (show . length $ tx) ++ " transactions found"
     putStr $ T.unpack . generate $ tx
 analyze (Args _ blockchain _ _ _ _) = 
