@@ -4,6 +4,7 @@ module RedBanana.Types where
 
 import Data.Aeson
 import Data.Text
+import Data.Word
 import GHC.Generics (Generic)
 
 data Transaction = Transaction 
