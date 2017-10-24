@@ -187,7 +187,7 @@ pushSize _ = 0
 
 hexToBytes :: String -> [Word8]
 hexToBytes [] = []
-hexToBytes ('\n':xs) = hexToBytes xs
+hexToBytes (c:cs) | c == '\n' || c == '\r' = hexToBytes cs
 hexToBytes (sb:(lb:xs)) = let byte = (fromIntegral $ (digitToInt sb) * 16 + digitToInt lb)
                           in (byte : (hexToBytes xs))
 
