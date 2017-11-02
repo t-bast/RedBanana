@@ -200,3 +200,6 @@ disasm (i:is) = instr:rest
                         (map CONST $ take count is) ++ (disasm $ drop count is)
                     else
                         disasm is
+
+disasmFile :: String -> IO [Instr]
+disasmFile filename = fmap (disasm . hexToBytes) $ readFile filename
