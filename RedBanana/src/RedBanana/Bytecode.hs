@@ -1,4 +1,4 @@
-module RedBanana.Bytecode where
+module RedBanana.Bytecode (disasmFiles) where
 
 import RedBanana.Types
 import Data.Char
