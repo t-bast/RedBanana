@@ -1,4 +1,4 @@
-module RedBanana.Bytecode (disasmFile) where
+module RedBanana.Bytecode (disasmFile, printOpCodes) where
 
 import RedBanana.Types
 import Data.Char
@@ -213,3 +213,8 @@ disasm (i:is) = instr:rest
 
 disasmFile :: String -> IO [Instr]
 disasmFile filename = fmap (disasm . hexToBytes) $ readFile filename
+
+printOpCodes :: String -> IO ()
+printOpCodes filename = do
+    instructions <- disasmFile filename
+    mapM_ print instructions
