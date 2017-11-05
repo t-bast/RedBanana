@@ -155,8 +155,17 @@ data Instr = STOP
            | CALLCODE
            | RETURN
            | DELEGATECALL
+           | BREAKPOINT
+           | RNGSEED
+           | SSIZEEXT
+           | SLOADBYTES
+           | SSTOREBYTES
+           | SSIZE
+           | STATEROOT
+           | TXEXECGAS
+           | CALLSTATIC
+           | INVALID
            | SUICIDE
            | CONST Word8
            | UNKNOWN Word8
            deriving (Show)
-
