@@ -1,4 +1,4 @@
-module RedBanana.Bytecode where
+module RedBanana.Bytecode (disasmFile, printOpCodes) where
 
 import RedBanana.Types
 import Data.Char
@@ -147,7 +147,17 @@ getInstr 0xf1 = CALL
 getInstr 0xf2 = CALLCODE
 getInstr 0xf3 = RETURN
 getInstr 0xf4 = DELEGATECALL
-getInstr 0xf5 = SUICIDE
+getInstr 0xf5 = BREAKPOINT
+getInstr 0xf6 = RNGSEED
+getInstr 0xf7 = SSIZEEXT
+getInstr 0xf8 = SLOADBYTES
+getInstr 0xf9 = SSTOREBYTES
+getInstr 0xfa = SSIZE
+getInstr 0xfb = STATEROOT
+getInstr 0xfc = TXEXECGAS
+getInstr 0xfd = CALLSTATIC
+getInstr 0xfe = INVALID -- Not an opcode use to cause an exception
+getInstr 0xff = SUICIDE
 getInstr opcode = UNKNOWN opcode
 
 pushSize :: Instr -> Int
@@ -202,4 +212,7 @@ disasm (i:is) = instr:rest
                         disasm is
 
 disasmFile :: String -> IO [Instr]
-disasmFile filename = fmap (disasm . hexToBytes) $ readFile filename
+disasmFile filename = (disasm . hexToBytes) <$> readFile filename
+
+printOpCodes :: String -> IO ()
+printOpCodes filename = mapM_ print =<< disasmFile filename
