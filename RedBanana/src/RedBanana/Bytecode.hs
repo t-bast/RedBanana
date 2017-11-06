@@ -212,9 +212,7 @@ disasm (i:is) = instr:rest
                         disasm is
 
 disasmFile :: String -> IO [Instr]
-disasmFile filename = fmap (disasm . hexToBytes) $ readFile filename
+disasmFile filename = (disasm . hexToBytes) <$> readFile filename
 
 printOpCodes :: String -> IO ()
-printOpCodes filename = do
-    instructions <- disasmFile filename
-    mapM_ print instructions
+printOpCodes filename = mapM_ print =<< disasmFile filename
