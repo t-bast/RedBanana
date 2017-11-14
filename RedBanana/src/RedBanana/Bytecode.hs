@@ -1,4 +1,4 @@
-module RedBanana.Bytecode (disasmFile, printOpCodes) where
+module RedBanana.Bytecode (disasmFile, printOpCodes, bindBlocks, Block) where
 
 import RedBanana.Types
 import Data.Char
@@ -216,3 +216,17 @@ disasmFile filename = (disasm . hexToBytes) <$> readFile filename
 
 printOpCodes :: String -> IO ()
 printOpCodes filename = mapM_ print =<< disasmFile filename
+
+data Block = Block Int [Instr] deriving (Show, Ord, Eq)
+
+
+
+bindBlocks :: [Instr] -> [Block]
+bindBlocks = fst . foldl group' ([], [])
+  where group' (blocks, instrs) instr = 
+            if isBlockDelimiter instr 
+            then (if null instrs 
+                  then blocks 
+                  else (blocks ++ [Block (length blocks) instrs]), [])
+            else (blocks, instrs ++ [instr])      
+        isBlockDelimiter = (`elem` [JUMP, JUMPDEST, JUMPI])

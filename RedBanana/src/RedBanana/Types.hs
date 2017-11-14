@@ -168,4 +168,4 @@ data Instr = STOP
            | SUICIDE
            | CONST Word8
            | UNKNOWN Word8
-           deriving (Show)
+           deriving (Show, Eq, Ord)
