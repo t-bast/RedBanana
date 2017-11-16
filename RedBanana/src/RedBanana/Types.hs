@@ -26,6 +26,8 @@ data TransactionArgs = TransactionArgs
     , sort :: Text }
     deriving (Show)
 
+data Block = Block Int [Instr] deriving (Show, Ord, Eq)
+
 data Instr = STOP
            | ADD
            | MUL
