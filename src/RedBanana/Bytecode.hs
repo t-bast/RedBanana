@@ -219,10 +219,10 @@ printOpCodes filename = mapM_ print =<< disasmFile filename
 
 bindBlocks :: [Instr] -> [Block]
 bindBlocks = fst . foldl group' ([], [])
-  where group' (blocks, instrs) instr = 
-            if isBlockDelimiter instr 
-            then (if null instrs 
-                  then blocks 
+  where group' (blocks, instrs) instr =
+            if isBlockDelimiter instr
+            then (if null instrs
+                  then blocks
                   else (blocks ++ [Block (length blocks) instrs]), [])
-            else (blocks, instrs ++ [instr])      
+            else (blocks, instrs ++ [instr])
         isBlockDelimiter = (`elem` [JUMP, JUMPDEST, JUMPI])

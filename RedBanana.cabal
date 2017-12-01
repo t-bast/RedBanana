@@ -29,7 +29,8 @@ library
                      , wreq
                      , formatting
                      , transformers
-  default-extensions:  OverloadedStrings
+                     , hoopl
+  default-extensions:  OverloadedStrings, GADTs
   default-language:    Haskell2010
 
 executable RedBanana-exe
